@@ -1,0 +1,74 @@
+model:
+  name: lvwerra/gpt2-imdb
+  load_in_8bit: false
+  peft_model_id: null
+  torch_dtype: null # fp16/null - dtype модели
+  device_map: auto
+  padding_side: left
+
+# lora_config:
+#   r: 16
+#   lora_alpha: 32
+#   lora_dropout: 0.1
+#   bias: "none"
+
+data:
+  dataset_name: Myashka/gpt2-imdb-constractive
+  val_size: 500
+
+# beta_hinge = 1/beta_dpo
+beta: 0.1
+loss_type: sigmoid
+# label_smoothing: 0
+generate_during_eval: true
+
+training_arguments:
+  seed: 42
+  num_train_epochs: 3
+  # max_steps: 1000
+  per_device_train_batch_size: 24
+  per_device_eval_batch_size: 24
+  learning_rate: 1.0e-05
+  optim: "adamw_torch"
+  # Oprims: adamw_hf/adamw_torch/adamw_torch_fused/adamw_apex_fused/adamw_anyprecision/adafactor
+  weight_decay: 0.05
+  adam_beta1: 0.9
+  adam_beta2: 0.99
+  max_grad_norm: 1
+
+  ### LR SCHEDULER ###
+  # TYPES: linear/cosine/cosine_with_restarts/polynomial/constant/constant_with_warmup
+  lr_scheduler_type: "cosine"
+  # warmup_ratio: 0.01
+  warmup_steps: 150
+
+  ### MEMORY OPTIMIZATION ###
+  gradient_accumulation_steps: 1 # !
+  # fp16: true
+  bf16: true
+  gradient_checkpointing: true
+
+  ### EVALUATION ###
+  evaluation_strategy: "steps" # steps/epoch
+  eval_steps: 500
+  remove_unused_columns: false
+  dataloader_drop_last: true
+  logging_first_step: true
+
+  ### SAVING ###
+  save_strategy: "steps" #steps/epoch; if steps needs `save_steps`
+  save_steps: 1000
+  output_dir: /root/tinkoff_nlp/artifacts/train-gpt-sigmoid-bs_24-lr_1.0e5-beta_0.1
+  save_total_limit: 2
+  load_best_model_at_end: true
+  resume_from_checkpoint: null
+  metric_for_best_model: rewards/accuracies
+
+  ### LOGGING CONFIG ###
+  logging_strategy: "steps"
+  logging_steps: 1
+  report_to: 'wandb'
+  run_name: train-gpt-sigmoid-bs_24-lr_1.0e5-beta_0.1
+    
+  push_to_hub: true
+  hub_model_id: Myashka/gpt-imdb-sigmoid-beta_0.1

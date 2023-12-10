@@ -1,0 +1,25 @@
+model:
+  name: Myashka/gpt-imdb-ipo-beta_0.5
+  load_in_8bit: false
+  peft_model_id: null
+  torch_dtype: null # fp16/null
+  device_map: cuda:0
+  padding_side: left
+seed: 42
+batch_size: 8
+data:
+  dataset_name: /root/tinkoff_nlp/data/raw/test_500.csv
+  max_prompt_length: 32
+  prompt_column: "text"  
+generate_config:
+  temperature: 0.7
+  do_sample: true
+  max_new_tokens: 256
+  no_repeat_ngram_size: 2
+  top_k: 40
+  use_cache: true
+  num_return_sequences: 25
+log_config:
+  save_steps: 5
+  dir: /root/tinkoff_nlp/data/intermediate/test
+  file_name: ipo_05.csv
