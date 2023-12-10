@@ -8,7 +8,7 @@ model:
 seed: 42
 batch_size: 8
 data:
-  dataset_name: /root/tinkoff_nlp/data/raw/test_500.csv
+  dataset_name: ./data/raw/test_500.csv
   max_prompt_length: 32
   prompt_column: "text"  
 generate_config:
@@ -21,5 +21,5 @@ generate_config:
   num_return_sequences: 25
 log_config:
   save_steps: 5
-  dir: /root/tinkoff_nlp/data/intermediate/test
+  dir: ./data/intermediate/test
   file_name: cdpo_015.csv

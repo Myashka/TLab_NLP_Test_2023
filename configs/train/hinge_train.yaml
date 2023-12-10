@@ -59,11 +59,11 @@ training_arguments:
   ### SAVING ###
   save_strategy: "steps" #steps/epoch; if steps needs `save_steps`
   save_steps: 1000
-  output_dir: /root/tinkoff_nlp/artifacts/train-gpt-hinge-bs_24-lr_1.0e5-beta_0.1
+  output_dir: ./artifacts/train-gpt-hinge-bs_24-lr_1.0e5-beta_0.1
   save_total_limit: 2
-  load_best_model_at_end: true
+  load_best_model_at_end: false
   resume_from_checkpoint: null
-  metric_for_best_model: rewards/accuracies
+  # metric_for_best_model: rewards/accuracies
 
   ### LOGGING CONFIG ###
   logging_strategy: "steps"
