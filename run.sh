@@ -95,5 +95,10 @@ python scripts/evaluation/get_rewards.py --text_column response --file_path ./da
 python scripts/evaluation/get_rewards.py --text_column response --file_path ./data/processed/test/ipo_annealing.csv
 python scripts/evaluation/get_rewards.py --text_column response --file_path ./data/processed/test/dpo_annealing.csv
 
+python scripts/model/train.py --config_file ./configs/train/kto_train.yaml
+python scripts/model/inference.py --config_file ./configs/inference/test_kto_config.yaml
+python scripts/data/filter_gen.py --input_file ./data/intermediate/test/kto.csv --output_file ./data/processed/test/kto.csv --min_token_count 10
+python scripts/evaluation/get_rewards.py --text_column response --file_path ./data/processed/test/kto.csv
+
 
 ### ./notebooks/evaluation.ipynb - получение графиков ###

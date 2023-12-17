@@ -113,6 +113,21 @@ class EnhancedDPOTrainer(DPOTrainer):
 
             logits = ratio_rejected - ratio_chosen
             losses = -F.logsigmoid((self.beta / self.alpha) * logits)
+        elif self.loss_type == "kto":
+            # eqn (7) of the HALOs paper
+            chosen_KL = (policy_chosen_logps - reference_chosen_logps).mean().clamp(min=0)
+            rejected_KL = (policy_rejected_logps - reference_rejected_logps).mean().clamp(min=0)
+
+            chosen_logratios = policy_chosen_logps - reference_chosen_logps
+            rejected_logratios = policy_rejected_logps - reference_rejected_logps
+            # As described in the KTO report, the KL term for chosen (rejected) is estimated using the rejected (chosen) half.
+            losses = torch.cat(
+                (
+                    1 - F.sigmoid(self.beta * (chosen_logratios - rejected_KL)),
+                    1 - F.sigmoid(self.beta * (chosen_KL - rejected_logratios)),
+                ),
+                0,
+            )
         else:
             raise ValueError(
                 f"Unknown loss type: {self.loss_type}. Should be one of ['sigmoid', 'hinge', 'jsd', 'fkl', 'alpha_divergence', 'ipo']"
